@@ -129,7 +129,7 @@ def main() -> None:
     parser_review.set_defaults(func=review)
 
     args = parser.parse_args()
-    if hasattr(args, 'func'):
+    if hasattr(args, "func"):
         args.func(args)
     else:
         parser.print_usage()

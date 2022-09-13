@@ -6,7 +6,6 @@ authors = ["Charlie Marsh <charlie.r.marsh@gmail.com>"]
 license = "MIT"
 readme = "README.md"
 repository = "https://github.com/charliermarsh/autobot"
-keywords = ["automation", "refactor", "GPT-3"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Environment :: Console",
