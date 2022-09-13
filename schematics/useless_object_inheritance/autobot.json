@@ -1,0 +1,5 @@
+{
+    "before_description": "with object inheritance",
+    "after_description": "without object inheritance",
+    "transform_type": "Class"
+}

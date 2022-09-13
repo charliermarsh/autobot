@@ -1,0 +1,5 @@
+{
+    "before_description": "with useless f-string prefixes",
+    "after_description": "without useless f-string prefixes",
+    "transform_type": "Function"
+}

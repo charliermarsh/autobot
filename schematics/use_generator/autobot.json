@@ -1,0 +1,5 @@
+{
+    "before_description": "as a list builder",
+    "after_description": "as a generator",
+    "transform_type": "Function"
+}
