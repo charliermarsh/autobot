@@ -36,18 +36,31 @@ In the first step (`autobot run {schematic} {files_to_analyze}`), we point Autob
 "schematic" that defines our desired change and (2) the files to which the change should be
 applied.
 
-In the second step (`autobot review`), we review the patches that Autobot generated and,
-for each suggested change, either apply it to the codebase or reject it.
+In the second step (`autobot review`), we review the patches that Autobot generated and, for each
+suggested change, either apply it to the codebase or reject the patch entirely.
+
+Autobot ships with several schematics that you can use out-of-the-box:
+
+- `assert_equals`
+- `convert_to_dataclass`
+- `numpy_builtin_aliases`
+- `print_statement`
+- `sorted_attributes`
+- `standard_library_generics`
+- `unnecessary_f_strings`
+- `use_generator`
+- `useless_object_inheritance`
 
 For example: to remove any usages of NumPy's deprecated `np.int` and associated aliases, we'd first
-run `autobot run ./schematics/numpy_builtin_aliases ./path/to/main.py`, followed by
-`autobot review`.
+run `autobot run numpy_builtin_aliases ./path/to/main.py`, followed by `autobot review`.
+
+The `schematic` argument to `autobot run` can either reference a directory within `schematics` (like
+`numpy_builtin_aliases`, above) or a path to a user-defined schematic directory on-disk.
 
 ### Implementing a novel refactor
 
-Every refactor facilitated by Autobot requires a "schematic". Autobot ships with a few example
-schematics in the `schematics` directory, but it's intended to be used with user-provided
-schematics.
+Every refactor facilitated by Autobot requires a "schematic". Autobot ships with a few schematics
+in the `schematics` directory, but it's intended to be used with user-provided schematics.
 
 A schematic is a directory containing three files:
 
@@ -84,16 +97,22 @@ class Foo(Bar):
 }
 ```
 
-We'd then run `autobot run useless_object_inheritance /path/to/file/or/directory` to generate
+We'd then run `autobot run ./useless_object_inheritance /path/to/file/or/directory` to generate
 patches, followed by `autobot review` to apply or reject the suggested changes.
 
 ## Limitations
 
-1. To speed up execution, Autobot calls out to the OpenAI API in parallel. If you haven't upgraded
+1. Running Autobot consumes OpenAI credits and thus could cost you money. Be careful!
+2. To speed up execution, Autobot calls out to the OpenAI API in parallel. If you haven't upgraded
    to a paid account, you may hit rate-limit errors. You can pass `--nthreads 1` to `autobot run`
-   to disable multi-threading.
-2. Depending on the transform type, Autobot will either generate a patch for every function or every
-   class. Any function or class that's "too long" will be GPT-3's maximum prompt size,
+   to disable multi-threading. Running Autobot over large codebases is not recommended (yet).
+3. Depending on the transform type, Autobot will attempt to generate a patch for every function or
+   every
+   class. Any function or class that's "too long" for GPT-3's maximum prompt size will be skipped.
+4. Autobot isn't smart enough to handle nested functions (or nested classes), so nested functions
+   will likely be processed and appear twice.
+5. Autobot only supports Python code for now. (Autobot relies on parsing the AST to extract relevant
+   code snippets, so additional languages require extending AST support.)
 
 ## License
 

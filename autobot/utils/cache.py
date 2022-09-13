@@ -3,9 +3,7 @@ import json
 import os
 from typing import Optional, TypeVar, cast
 
-CACHE_DIR = os.path.join(
-    os.path.dirname(os.path.dirname(os.path.dirname(__file__))), ".autobot", "cache"
-)
+CACHE_DIR = os.path.join(os.getcwd(), ".autobot_cache")
 
 T = TypeVar("T")
 

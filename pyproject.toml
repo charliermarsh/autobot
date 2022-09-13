@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "autobot-ml"
-version = "0.0.4"
+version = "0.0.5"
 description = "An automated code refactoring tool powered by GPT-3."
 authors = ["Charlie Marsh <charlie.r.marsh@gmail.com>"]
 license = "MIT"
@@ -20,7 +20,7 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Topic :: Software Development :: Quality Assurance",
 ]
-packages = [{ include = "autobot" }]
+packages = [{ include = "autobot" }, { include = "schematics "}]
 
 [tool.poetry.dependencies]
 python = ">=3.8,<3.11"

@@ -5,8 +5,8 @@ from typing import Dict, List, Optional
 from colorama import Fore
 from rich.console import Console
 
-from autobot.constants import PATCH_DIR
-from autobot.refactor import patch
+from autobot.refactor import patches
+from autobot.refactor.patches import PATCH_DIR
 from autobot.utils.getch import getch
 
 
@@ -24,11 +24,11 @@ class Resolution(enum.Enum):
 
 
 def run_review() -> None:
-    patches: List[str] = []
+    patch_files: List[str] = []
     for root, _, filenames in os.walk(PATCH_DIR):
         for filename in filenames:
             if filename.endswith(".patch"):
-                patches.append(os.path.join(root, filename))
+                patch_files.append(os.path.join(root, filename))
 
     console = Console()
 
@@ -37,9 +37,9 @@ def run_review() -> None:
         Resolution.REJECT: [],
         Resolution.SKIP: [],
     }
-    num_patches = len(patches)
-    for i, patch_file in enumerate(patches):
-        if patch.can_apply(patch_file):
+    num_patches = len(patch_files)
+    for i, patch_file in enumerate(patch_files):
+        if patches.can_apply(patch_file):
             with console.screen(hide_cursor=False):
                 with open(patch_file, "r") as fp:
                     contents = fp.read()
@@ -75,7 +75,7 @@ def run_review() -> None:
                 patches_by_resolution[resolution].append(patch_file)
                 if resolution == Resolution.ACCEPT:
                     # Apply the patch.
-                    patch.apply(patch_file)
+                    patches.apply(patch_file)
                     os.remove(patch_file)
                 elif resolution == Resolution.REJECT:
                     # Reject the patch.
@@ -88,9 +88,9 @@ def run_review() -> None:
 
     if num_patches > 0:
         if num_patches == 1:
-            console.print(f"[bold]Done![/] Reviewed {len(patches)} patch.")
+            console.print(f"[bold]Done![/] Reviewed {len(patch_files)} patch.")
         else:
-            console.print(f"[bold]Done![/] Reviewed {len(patches)} patches.")
+            console.print(f"[bold]Done![/] Reviewed {len(patch_files)} patches.")
         for resolution in patches_by_resolution:
             if patches_by_resolution[resolution]:
                 if resolution == Resolution.ACCEPT:

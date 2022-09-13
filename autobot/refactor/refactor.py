@@ -9,7 +9,7 @@ from colorama import Fore
 from rich.console import Console
 
 from autobot import prompt
-from autobot.constants import PATCH_DIR
+from autobot.refactor import patches
 from autobot.snippet import Snippet, iter_snippets, recontextualize
 from autobot.transforms import TransformType
 from autobot.utils import filesystem
@@ -150,22 +150,14 @@ def run_refactor(
                 patch += line
                 patch += "\n"
 
+            # Save the patch.
             if patch:
-                # Save the patch.
-                (target_filename, _) = os.path.splitext(target)
-                patch_filename = os.path.join(
-                    PATCH_DIR,
-                    f"{target_filename}-{lineno}.patch",
-                )
-                os.makedirs(os.path.dirname(patch_filename), exist_ok=True)
-                with open(patch_filename, "w") as fp:
-                    fp.write(patch)
-
+                patches.save(patch, target=target, lineno=lineno)
                 count += 1
 
     console.print()
     if count == 0:
-        console.print(f"[bold white]✅ Done! No suggestions found.")
+        console.print(f"[bold white]✨ Done! No suggestions found.")
     elif count == 1:
         console.print(f"[bold white]✨ Done! Generated {count} patch.")
     else:

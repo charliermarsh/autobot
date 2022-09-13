@@ -7,6 +7,7 @@ from typing import Any, List
 
 from dotenv import load_dotenv
 from rich.console import Console
+from rich.logging import RichHandler
 
 from autobot.transforms import TransformType
 
@@ -25,14 +26,22 @@ def run(options: Any) -> None:
         format="%(asctime)s %(levelname)-8s %(message)s",
         datefmt="%m-%d %H:%M:%S",
         level=logging.DEBUG if verbose else logging.INFO,
+        handlers=[RichHandler()],
     )
 
     console = Console()
 
-    # Extract various inputs based on the schematic location.
+    # Attempt to load the schematic.
     if not os.path.isdir(schematic):
-        console.print(f"[bold red]error[/]  Directory not found: {schematic}")
-        exit(1)
+        # Fallback: this could be a schematic that ships with autobot (i.e. a path
+        # relative to ./schematics).
+        schematic = os.path.join(
+            os.path.dirname(os.path.dirname(__file__)), "schematics", schematic
+        )
+
+        if not os.path.isdir(schematic):
+            console.print(f"[bold red]error[/]  Directory not found: {schematic}")
+            exit(1)
 
     before_filename: str = os.path.join(schematic, "before.py")
     if not os.path.isfile(before_filename):

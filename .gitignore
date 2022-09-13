@@ -1,5 +1,6 @@
 # Local ignores
-.autobot
+.autobot_cache
+.autobot_patches
 schematics/**/targets
 
 # Byte-compiled / optimized / DLL files
