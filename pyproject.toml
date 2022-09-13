@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "autobot-ml"
-version = "0.0.5"
+version = "0.0.6"
 description = "An automated code refactoring tool powered by GPT-3."
 authors = ["Charlie Marsh <charlie.r.marsh@gmail.com>"]
 license = "MIT"
@@ -20,7 +20,8 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Topic :: Software Development :: Quality Assurance",
 ]
-packages = [{ include = "autobot" }, { include = "schematics "}]
+packages = [{ include = "autobot" }]
+include = ["schematics"]
 
 [tool.poetry.dependencies]
 python = ">=3.8,<3.11"
@@ -44,9 +45,9 @@ build-backend = "poetry.core.masonry.api"
 [tool.black]
 line-length = 88
 target-version = ["py310"]
-extend-exclude = "schematics"
+extend-exclude = "autobot/schematics"
 preview = true
 
 [tool.isort]
 profile = "black"
-extend_skip = "schematics"
+extend_skip = "autobot/schematics"

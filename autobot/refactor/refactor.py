@@ -66,8 +66,8 @@ def run_refactor(
         before_text.splitlines(),
         after_text.splitlines(),
         lineterm="",
-        fromfile=os.path.join("a", before_filename),
-        tofile=os.path.join("b", after_filename),
+        fromfile=os.path.join("a", title, "before.py"),
+        tofile=os.path.join("b", title, "after.py"),
     ):
         # TODO(charlie): Why is this necessary? Without it, blank lines contain
         # a single space.

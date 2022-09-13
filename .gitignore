@@ -1,7 +1,7 @@
 # Local ignores
 .autobot_cache
 .autobot_patches
-schematics/**/targets
+autobot/schematics/**/targets
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

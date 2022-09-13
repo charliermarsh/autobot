@@ -18,7 +18,6 @@ def run(options: Any) -> None:
 
     api.init()
 
-    schematic: str = options.schematic
     nthreads: int = options.nthreads
     verbose: bool = options.verbose
 
@@ -32,14 +31,17 @@ def run(options: Any) -> None:
     console = Console()
 
     # Attempt to load the schematic.
+    schematic: str = options.schematic.rstrip("/")
     if not os.path.isdir(schematic):
         # Fallback: this could be a schematic that ships with autobot (i.e. a path
         # relative to ./schematics).
-        schematic = os.path.join(
-            os.path.dirname(os.path.dirname(__file__)), "schematics", schematic
+        bundled_schematic = os.path.join(
+            os.path.dirname(__file__), "schematics", schematic
         )
 
-        if not os.path.isdir(schematic):
+        if os.path.isdir(bundled_schematic):
+            schematic = bundled_schematic
+        else:
             console.print(f"[bold red]error[/]  Directory not found: {schematic}")
             exit(1)
 
