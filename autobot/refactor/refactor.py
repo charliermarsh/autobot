@@ -3,6 +3,7 @@ import functools
 import logging
 import os.path
 from multiprocessing.pool import ThreadPool
+from typing import Dict, List, Set, Tuple
 
 from colorama import Fore
 from rich.console import Console
@@ -22,7 +23,7 @@ def fix_text(
     after_text: str,
     before_description: str,
     after_description: str,
-) -> tuple[str, str]:
+) -> Tuple[str, str]:
     """Generate a fix for a snippet.
 
     Returns: a tuple of (snippet, suggested fix), to play nicely with multiprocessing.
@@ -44,7 +45,7 @@ def run_refactor(
     title: str,
     before_filename: str,
     after_filename: str,
-    targets: list[str],
+    targets: List[str],
     before_description: str,
     after_description: str,
     transform_type: TransformType,
@@ -88,8 +89,8 @@ def run_refactor(
     # Deduplicate targets, such that if we need to apply the same fix to a bunch of
     # snippets, we only make a single API call.
     console.print("[bold]2. Extracting AST nodes...")
-    filename_to_snippets = dict[str, list[Snippet]]()
-    all_snippet_texts = set[str]()
+    filename_to_snippets: Dict[str, List[Snippet]] = {}
+    all_snippet_texts: Set[str] = set()
     for filename in targets:
         with open(filename, "r") as fp:
             source_code = fp.read()
@@ -107,7 +108,7 @@ def run_refactor(
 
     # Map from snippet text to suggested fix.
     console.print("[bold]3. Generating LLM completions...")
-    snippet_text_to_completion = dict[str, str]()
+    snippet_text_to_completion: Dict[str, str] = {}
     with ThreadPool(processes=nthreads) as pool:
         for text, completion in pool.map(
             functools.partial(

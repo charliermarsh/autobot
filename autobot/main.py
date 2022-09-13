@@ -3,7 +3,7 @@ import argparse
 import json
 import logging
 import os
-from typing import Any
+from typing import Any, List
 
 from dotenv import load_dotenv
 from rich.console import Console
@@ -77,7 +77,7 @@ def run(options: Any) -> None:
             )
             exit(1)
 
-    targets: list[str] = options.target
+    targets: List[str] = options.target
 
     run_refactor(
         title=os.path.basename(schematic),

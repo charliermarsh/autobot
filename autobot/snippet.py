@@ -1,6 +1,6 @@
 import ast
 import re
-from typing import Generator, List, NamedTuple, Type
+from typing import Generator, List, NamedTuple, Type, Union
 
 
 def decontextualize(source: str, node: ast.stmt) -> "Snippet":
@@ -26,14 +26,14 @@ def decontextualize(source: str, node: ast.stmt) -> "Snippet":
     return Snippet(source_segment, padding, node.lineno)
 
 
-def recontextualize(snippet: "Snippet", source: str) -> list[str]:
+def recontextualize(snippet: "Snippet", source: str) -> List[str]:
     """Recontextualize a snippet within its originating source code.
 
     Takes the originating source code and snippet as input, and outputs the lines of the
     source code up to and including the snippet, with the snippet adjusted to match the
     indentation of its originating context.
     """
-    lines: list[str] = []
+    lines: List[str] = []
 
     # Prepend any lines of the originating source code that precede the snippet.
     source_lines = source.splitlines()
@@ -89,7 +89,7 @@ def iter_snippets(
     Returns: a tuple of (text to fix, any indentation that was removed from the
         snippet, line number in the source file).
     """
-    visitor: ClassDefVisitor | FunctionDefVisitor
+    visitor: Union[ClassDefVisitor, FunctionDefVisitor]
     if node_type == ast.ClassDef:
         visitor = ClassDefVisitor()
     elif node_type == ast.FunctionDef:

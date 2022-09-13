@@ -1,5 +1,6 @@
 import glob
 import os
+from typing import List, Set
 
 
 def is_python_file(filename: str) -> bool:
@@ -7,9 +8,9 @@ def is_python_file(filename: str) -> bool:
     return filename.endswith(".py") or filename.endswith(".pyi")
 
 
-def collect_python_files(targets: list[str]) -> list[str]:
+def collect_python_files(targets: List[str]) -> List[str]:
     """Enumerate all Python files in a target."""
-    collected: set[str] = set()
+    collected: Set[str] = set()
     for target in targets:
         for file_or_directory in glob.iglob(target):
             if os.path.isdir(file_or_directory):

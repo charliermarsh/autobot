@@ -3,6 +3,7 @@ import hashlib
 import json
 import logging
 import os
+from typing import List, Optional, Union
 
 import openai
 
@@ -19,7 +20,7 @@ def create_completion(
     max_tokens: int,
     temperature: int = 0,
     model: str = "text-davinci-002",
-    stop: str | list[str] | None = None,
+    stop: Optional[Union[str, List[str]]] = None,
 ) -> openai.Completion:
     request_hash = hashlib.md5(
         json.dumps(
