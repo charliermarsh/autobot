@@ -1,5 +1,6 @@
 # autobot
 
+[![Actions status](https://github.com/charliermarsh/autobot/workflows/CI/badge.svg)](https://github.com/charliermarsh/autobot/actions)
 [![PyPI version](https://badge.fury.io/py/autobot-ml.svg)](https://badge.fury.io/py/autobot-ml)
 
 An automated code refactoring tool powered by GPT-3. Like GitHub Copilot, for your existing
