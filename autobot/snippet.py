@@ -5,7 +5,19 @@ import re
 from typing import Generator, NamedTuple, Type
 
 
-def decontextualize(source_code: str, node: ast.stmt) -> "Snippet":
+class Snippet(NamedTuple):
+    """A snippet extracted from source code."""
+
+    text: str
+    padding: str
+    lineno: int
+
+    @classmethod
+    def from_node(cls, source_code: str, node: ast.stmt) -> Snippet:
+        return decontextualize(source_code, node)
+
+
+def decontextualize(source_code: str, node: ast.stmt) -> Snippet:
     """Decontextualize a snippet from its originating source code.
 
     Takes the originating source code as input, along with the node to decontextualize,
@@ -28,7 +40,7 @@ def decontextualize(source_code: str, node: ast.stmt) -> "Snippet":
     return Snippet(source_segment, padding, node.lineno)
 
 
-def recontextualize(snippet: "Snippet", source_code: str) -> list[str]:
+def recontextualize(snippet: Snippet, source_code: str) -> list[str]:
     """Recontextualize a snippet within its originating source code.
 
     Takes the originating source code and snippet as input, and outputs the lines of the
@@ -48,18 +60,6 @@ def recontextualize(snippet: "Snippet", source_code: str) -> list[str]:
         lines.append(snippet.padding + line)
 
     return lines
-
-
-class Snippet(NamedTuple):
-    """A snippet extracted from source code."""
-
-    text: str
-    padding: str
-    lineno: int
-
-    @classmethod
-    def from_node(cls, source_code: str, node: ast.stmt) -> "Snippet":
-        return decontextualize(source_code, node)
 
 
 def iter_snippets(

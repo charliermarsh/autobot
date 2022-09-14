@@ -56,7 +56,7 @@ class Schematic(NamedTuple):
     transform_type: TransformType
 
     @classmethod
-    def from_directory(cls, dirname: str) -> "Schematic":
+    def from_directory(cls, dirname: str) -> Schematic:
         """Load a Schematic from a directory."""
         dirname = dirname.rstrip("/")
         title = os.path.basename(dirname)
