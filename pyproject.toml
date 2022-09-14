@@ -32,6 +32,7 @@ rich = "^12.5.1"
 [tool.poetry.dev-dependencies]
 black = "^22.8.0"
 isort = "^5.10.1"
+twine = "^4.0.1"
 mypy = "^0.971"
 
 [tool.poetry.scripts]
