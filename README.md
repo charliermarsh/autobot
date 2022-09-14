@@ -16,7 +16,7 @@ See more examples on <a href="https://twitter.com/charliermarsh/status/156932985
 Twitter</a>, or read the <a href="https://notes.crmarsh.com/building-large-language-model-powered-applications" target="_blank">
 blog post</a>.
 
-_N.B. Autobot is a prototype and isn't recommended for use of large codebases. See: "Limitations"._
+_N.B. Autobot is a prototype and isn't recommended for use of large codebases. See: ["Limitations"](#Limitations)._
 
 ## Getting started
 
@@ -134,8 +134,7 @@ patches, followed by `autobot review` to apply or reject the suggested changes.
 
 1. **Multi-language support.** Autobot only supports Python code for now. Extending to
    multi-language support, at least with the current algorithm, will require supporting additional
-   AST parsers. The most likely outcome here will either be to leverage [`tree-sitter`](https://github.com/tree-sitter/tree-sitter)
-   via a Rust rewrite or a Rust crate with a Python interface.
+   AST parsers. The most likely outcome here will either be to leverage [`tree-sitter`](https://github.com/tree-sitter/tree-sitter).
 2. **Supporting large codebases.** What would it take to run Autobot over hundreds of thousands of
    lines of code?
 

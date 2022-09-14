@@ -5,24 +5,19 @@ import os.path
 from multiprocessing.pool import ThreadPool
 from typing import Dict, List, Set, Tuple
 
-from colorama import Fore
 from rich.console import Console
 from rich.progress import Progress
 
 from autobot import prompt
 from autobot.refactor import patches
+from autobot.schematic import Schematic
 from autobot.snippet import Snippet, iter_snippets, recontextualize
-from autobot.transforms import TransformType
 
 
 def fix_text(
     text: str,
     *,
-    transform_type: TransformType,
-    before_text: str,
-    after_text: str,
-    before_description: str,
-    after_description: str,
+    schematic: Schematic,
     model: str,
 ) -> Tuple[str, str]:
     """Generate a fix for a snippet.
@@ -32,11 +27,11 @@ def fix_text(
     return text, prompt.resolve_prompt(
         prompt.make_prompt(
             text,
-            transform_type=transform_type,
-            before_text=before_text,
-            after_text=after_text,
-            before_description=before_description,
-            after_description=after_description,
+            transform_type=schematic.transform_type,
+            before_text=schematic.before_text,
+            after_text=schematic.after_text,
+            before_description=schematic.before_description,
+            after_description=schematic.after_description,
         ),
         model=model,
     )
@@ -44,46 +39,24 @@ def fix_text(
 
 def run_refactor(
     *,
-    title: str,
-    before_filename: str,
-    after_filename: str,
+    schematic: Schematic,
     targets: List[str],
-    before_description: str,
-    after_description: str,
-    transform_type: TransformType,
     nthreads: int,
     model: str,
 ) -> None:
-    with open(before_filename, "r") as fp:
-        before_text = fp.read()
-
-    with open(after_filename, "r") as fp:
-        after_text = fp.read()
-
     console = Console()
 
-    console.print(f"[bold]Running [bold cyan]{title}[/] based on user-provided example")
+    console.print(
+        f"[bold]Running [bold cyan]{schematic.title}[/] based on user-provided example"
+    )
 
-    console.print("-" * len(f"Running {title} based on user-provided example"))
-    for line in difflib.unified_diff(
-        before_text.splitlines(),
-        after_text.splitlines(),
-        lineterm="",
-        fromfile=os.path.join("a", title, "before.py"),
-        tofile=os.path.join("b", title, "after.py"),
-    ):
-        # TODO(charlie): Why is this necessary? Without it, blank lines contain
-        # a single space.
-        if len(line.strip()) == 0:
-            line = line.strip()
-
-        if line.startswith("-"):
-            print(f"{Fore.RED}{line}{Fore.RESET}")
-        elif line.startswith("+"):
-            print(f"{Fore.GREEN}{line}{Fore.RESET}")
-        else:
-            print(line)
-    console.print("-" * len(f"Running {title} based on user-provided example"))
+    console.print(
+        "-" * len(f"Running {schematic.title} based on user-provided example")
+    )
+    schematic.print_diff()
+    console.print(
+        "-" * len(f"Running {schematic.title} based on user-provided example")
+    )
     console.print()
 
     # Deduplicate targets, such that if we need to apply the same fix to a bunch of
@@ -96,7 +69,9 @@ def run_refactor(
             source_code = fp.read()
 
         filename_to_snippets[filename] = []
-        for snippet in iter_snippets(source_code, transform_type.ast_node_type()):
+        for snippet in iter_snippets(
+            source_code, schematic.transform_type.ast_node_type()
+        ):
             max_snippet_len = 1600
             if len(snippet.text) > max_snippet_len:
                 logging.warning(
@@ -116,11 +91,7 @@ def run_refactor(
             for text, completion in pool.map(
                 functools.partial(
                     fix_text,
-                    transform_type=transform_type,
-                    before_text=before_text,
-                    after_text=after_text,
-                    before_description=before_description,
-                    after_description=after_description,
+                    schematic=schematic,
                     model=model,
                 ),
                 all_snippet_texts,
