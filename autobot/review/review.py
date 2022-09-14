@@ -1,6 +1,7 @@
+from __future__ import annotations
+
 import enum
 import os
-from typing import Dict, List, Optional
 
 from colorama import Fore
 from rich.console import Console
@@ -16,7 +17,7 @@ class Resolution(enum.Enum):
     SKIP = "s"
 
     @classmethod
-    def from_code(cls, code: str) -> Optional["Resolution"]:
+    def from_code(cls, code: str) -> Resolution | None:
         try:
             return cls(code)
         except ValueError:
@@ -24,7 +25,7 @@ class Resolution(enum.Enum):
 
 
 def run_review() -> None:
-    patch_files: List[str] = []
+    patch_files: list[str] = []
     for root, _, filenames in os.walk(PATCH_DIR):
         for filename in filenames:
             if filename.endswith(".patch"):
@@ -32,7 +33,7 @@ def run_review() -> None:
 
     console = Console()
 
-    patches_by_resolution: Dict[Resolution, List[str]] = {
+    patches_by_resolution: dict[Resolution, list[str]] = {
         Resolution.ACCEPT: [],
         Resolution.REJECT: [],
         Resolution.SKIP: [],

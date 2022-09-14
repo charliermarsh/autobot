@@ -1,4 +1,6 @@
-from typing import List, NamedTuple, Optional, Union, cast
+from __future__ import annotations
+
+from typing import NamedTuple, cast
 
 from autobot import api
 from autobot.transforms import TransformType
@@ -7,7 +9,7 @@ from autobot.transforms import TransformType
 class Prompt(NamedTuple):
     text: str
     max_tokens: int
-    stop: Optional[Union[str, List[str]]]
+    stop: str | list[str] | None
 
 
 def make_prompt(

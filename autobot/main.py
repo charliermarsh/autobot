@@ -1,4 +1,6 @@
 """Entrypoint to the autobot CLI."""
+from __future__ import annotations
+
 import argparse
 import logging
 from typing import Any

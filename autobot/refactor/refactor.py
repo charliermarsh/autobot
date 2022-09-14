@@ -1,9 +1,10 @@
+from __future__ import annotations
+
 import difflib
 import functools
 import logging
 import os.path
 from multiprocessing.pool import ThreadPool
-from typing import Dict, List, Set, Tuple
 
 from rich.console import Console
 from rich.progress import Progress
@@ -19,7 +20,7 @@ def fix_text(
     *,
     schematic: Schematic,
     model: str,
-) -> Tuple[str, str]:
+) -> tuple[str, str]:
     """Generate a fix for a snippet.
 
     Returns: a tuple of (snippet, suggested fix), to play nicely with multiprocessing.
@@ -40,7 +41,7 @@ def fix_text(
 def run_refactor(
     *,
     schematic: Schematic,
-    targets: List[str],
+    targets: list[str],
     nthreads: int,
     model: str,
 ) -> None:
@@ -62,8 +63,8 @@ def run_refactor(
     # Deduplicate targets, such that if we need to apply the same fix to a bunch of
     # snippets, we only make a single API call.
     console.print("[bold]1. Extracting AST nodes...")
-    filename_to_snippets: Dict[str, List[Snippet]] = {}
-    all_snippet_texts: Set[str] = set()
+    filename_to_snippets: dict[str, list[Snippet]] = {}
+    all_snippet_texts: set[str] = set()
     for filename in targets:
         with open(filename, "r") as fp:
             source_code = fp.read()
@@ -84,7 +85,7 @@ def run_refactor(
 
     # Map from snippet text to suggested fix.
     console.print("[bold]2. Generating completions...")
-    snippet_text_to_completion: Dict[str, str] = {}
+    snippet_text_to_completion: dict[str, str] = {}
     with Progress(transient=True, console=console) as progress:
         task = progress.add_task("", total=len(all_snippet_texts))
         with ThreadPool(processes=nthreads) as pool:

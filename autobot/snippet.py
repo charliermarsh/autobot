@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 import ast
 import re
-from typing import Generator, List, NamedTuple, Type, Union
+from typing import Generator, NamedTuple, Type
 
 
 def decontextualize(source: str, node: ast.stmt) -> "Snippet":
@@ -26,14 +28,14 @@ def decontextualize(source: str, node: ast.stmt) -> "Snippet":
     return Snippet(source_segment, padding, node.lineno)
 
 
-def recontextualize(snippet: "Snippet", source: str) -> List[str]:
+def recontextualize(snippet: "Snippet", source: str) -> list[str]:
     """Recontextualize a snippet within its originating source code.
 
     Takes the originating source code and snippet as input, and outputs the lines of the
     source code up to and including the snippet, with the snippet adjusted to match the
     indentation of its originating context.
     """
-    lines: List[str] = []
+    lines: list[str] = []
 
     # Prepend any lines of the originating source code that precede the snippet.
     source_lines = source.splitlines()
@@ -64,7 +66,7 @@ class ClassDefVisitor(ast.NodeVisitor):
     """NodeVisitor to collect all ClassDef nodes in an AST."""
 
     def __init__(self) -> None:
-        self.nodes: List[ast.ClassDef] = []
+        self.nodes: list[ast.ClassDef] = []
 
     def visit_ClassDef(self, node: ast.ClassDef) -> None:
         self.nodes.append(node)
@@ -74,7 +76,7 @@ class FunctionDefVisitor(ast.NodeVisitor):
     """NodeVisitor to collect all FunctionDef nodes in an AST."""
 
     def __init__(self) -> None:
-        self.nodes: List[ast.FunctionDef] = []
+        self.nodes: list[ast.FunctionDef] = []
 
     def visit_FunctionDef(self, node: ast.FunctionDef) -> None:
         self.nodes.append(node)
@@ -89,7 +91,7 @@ def iter_snippets(
     Returns: a tuple of (text to fix, any indentation that was removed from the
         snippet, line number in the source file).
     """
-    visitor: Union[ClassDefVisitor, FunctionDefVisitor]
+    visitor: ClassDefVisitor | FunctionDefVisitor
     if node_type == ast.ClassDef:
         visitor = ClassDefVisitor()
     elif node_type == ast.FunctionDef:

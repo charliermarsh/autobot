@@ -2,6 +2,8 @@
 
 Note that these tests rely on the OpenAI API.
 """
+from __future__ import annotations
+
 import unittest
 
 from dotenv import load_dotenv

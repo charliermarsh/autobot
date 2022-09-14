@@ -1,7 +1,9 @@
 """Filesystem-based cache for storing JSON objects."""
+from __future__ import annotations
+
 import json
 import os
-from typing import Optional, TypeVar, cast
+from typing import TypeVar, cast
 
 CACHE_DIR = os.path.join(os.getcwd(), ".autobot_cache")
 
@@ -17,7 +19,7 @@ def has_in_cache(key: str) -> bool:
     return os.path.exists(cache_filename(key))
 
 
-def get_from_cache(key: str) -> Optional[T]:
+def get_from_cache(key: str) -> T | None:
     os.makedirs(os.path.dirname(cache_filename(key)), exist_ok=True)
     try:
         with open(cache_filename(key), "r") as fp:

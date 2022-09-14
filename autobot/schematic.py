@@ -1,7 +1,9 @@
+from __future__ import annotations
+
 import ast
 import difflib
 import os
-from typing import NamedTuple, Optional
+from typing import NamedTuple
 
 from colorama import Fore
 
@@ -15,7 +17,7 @@ class SchematicDefinitionException(Exception):
     pass
 
 
-def extract_transform_type(source_code: str) -> Optional[TransformType]:
+def extract_transform_type(source_code: str) -> TransformType | None:
     for node in ast.walk(ast.parse(source_code)):
         if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
             return TransformType.FUNCTION
@@ -26,7 +28,7 @@ def extract_transform_type(source_code: str) -> Optional[TransformType]:
         return None
 
 
-def extract_source(source_code: str) -> Optional[str]:
+def extract_source(source_code: str) -> str | None:
     for node in ast.walk(ast.parse(source_code)):
         if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
             return ast.get_source_segment(source_code, node)
@@ -37,7 +39,7 @@ def extract_source(source_code: str) -> Optional[str]:
         return None
 
 
-def extract_description(source_code: str) -> Optional[str]:
+def extract_description(source_code: str) -> str | None:
     for node in ast.walk(ast.parse(source_code)):
         if isinstance(node, ast.Module):
             return ast.get_docstring(node)
