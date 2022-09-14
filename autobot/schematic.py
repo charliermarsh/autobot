@@ -5,8 +5,6 @@ import difflib
 import os
 from typing import NamedTuple
 
-from colorama import Fore
-
 from autobot.transforms import TransformType
 
 BEFORE_FILENAME: str = "before.py"
@@ -121,6 +119,8 @@ class Schematic(NamedTuple):
         )
 
     def print_diff(self) -> None:
+        from colorama import Fore
+
         for line in difflib.unified_diff(
             self.before_text.splitlines(),
             self.after_text.splitlines(),

@@ -7,7 +7,6 @@ from colorama import Fore
 from rich.console import Console
 
 from autobot.refactor import patches
-from autobot.refactor.patches import PATCH_DIR
 from autobot.utils.getch import getch
 
 
@@ -26,7 +25,7 @@ class Resolution(enum.Enum):
 
 def run_review() -> None:
     patch_files: list[str] = []
-    for root, _, filenames in os.walk(PATCH_DIR):
+    for root, _, filenames in os.walk(patches.PATCH_DIR):
         for filename in filenames:
             if filename.endswith(".patch"):
                 patch_files.append(os.path.join(root, filename))
@@ -104,6 +103,6 @@ def run_review() -> None:
                     raise ValueError(f"Unexpected resolution: {resolution}")
 
                 for patch_file in patches_by_resolution[resolution]:
-                    print(f"  {os.path.relpath(patch_file, PATCH_DIR)}")
+                    print(f"  {os.path.relpath(patch_file, patches.PATCH_DIR)}")
     else:
         console.print("[bold]Done![/] No patches to review.")

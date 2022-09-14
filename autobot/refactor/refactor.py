@@ -15,15 +15,15 @@ from autobot.schematic import Schematic
 from autobot.snippet import Snippet, iter_snippets, recontextualize
 
 
-def fix_text(
+def _fix_text(
     text: str,
     *,
     schematic: Schematic,
     model: str,
 ) -> tuple[str, str]:
-    """Generate a fix for a snippet.
+    """Generate a fix for a piece of source code.
 
-    Returns: a tuple of (snippet, suggested fix), to play nicely with multiprocessing.
+    Returns: a tuple of (input, suggested fix), to play nicely with multiprocessing.
     """
     return text, prompt.resolve_prompt(
         prompt.make_prompt(
@@ -91,7 +91,7 @@ def run_refactor(
         with ThreadPool(processes=nthreads) as pool:
             for text, completion in pool.map(
                 functools.partial(
-                    fix_text,
+                    _fix_text,
                     schematic=schematic,
                     model=model,
                 ),
