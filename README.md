@@ -12,6 +12,10 @@ codebase.
 Autobot takes an example change as input and generates patches for you to review by scanning your
 codebase for similar code blocks and "applying" that change to the existing source code.
 
+See more examples on <a href="https://twitter.com/charliermarsh/status/1569329858475425792" target="_blank">
+Twitter</a>, or read the <a href="https://notes.crmarsh.com/building-large-language-model-powered-applications" target="_blank">
+blog post</a>.
+
 ## Getting started
 
 Autobot is available as [`autobot-ml`](https://pypi.org/project/autobot-ml/) on PyPI:
