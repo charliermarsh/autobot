@@ -5,18 +5,18 @@
 An automated code refactoring tool powered by GPT-3. Like GitHub Copilot, for your existing
 codebase.
 
+Autobot takes an example change as input and generates patches for you to review by scanning your
+codebase for similar code blocks and "applying" that change to the existing source code.
+
 <p align="center">
   <img alt="Sorting class attributes" src="https://user-images.githubusercontent.com/1309177/190036496-28d096f1-fde5-47af-a936-235b3802dc07.gif">
 </p>
-
-Autobot takes an example change as input and generates patches for you to review by scanning your
-codebase for similar code blocks and "applying" that change to the existing source code.
 
 See more examples on <a href="https://twitter.com/charliermarsh/status/1569329858475425792" target="_blank">
 Twitter</a>, or read the <a href="https://notes.crmarsh.com/building-large-language-model-powered-applications" target="_blank">
 blog post</a>.
 
-_N.B. Autobot is a prototype and isn't recommended for use of large codebases. See: ["Limitations"](#Limitations)._
+_N.B. Autobot is a prototype and isn't recommended for use on large codebases. See: ["Limitations"](#Limitations)._
 
 ## Getting started
 
@@ -35,6 +35,12 @@ Autobot can also read from a `.env` file:
 ```
 OPENAI_ORGANIZATION=${YOUR_OPENAI_ORGANIZATION}
 OPENAI_API_KEY=${YOUR_OPENAI_API_KEY}
+```
+
+From there, you can run any of Autobot's built-in refactors (called "schematics"):
+
+```shell
+autobot run useless_object_inheritance /path/to/file.py
 ```
 
 ## Example usage
@@ -64,12 +70,12 @@ Autobot ships with several schematics that you can use out-of-the-box:
 - `useless_object_inheritance`
 
 For example: to remove any usages of NumPy's deprecated `np.int` and associated aliases, we'd first
-run `autobot run numpy_builtin_aliases ./path/to/main.py`, followed by `autobot review`.
+run `autobot run numpy_builtin_aliases /path/to/file.py`, followed by `autobot review`.
 
 The `schematic` argument to `autobot run` can either reference a directory within `schematics` (like
 `numpy_builtin_aliases`, above) or a path to a user-defined schematic directory on-disk.
 
-### Implementing a novel refactor
+### Implementing a new refactor ("schematic")
 
 Every refactor facilitated by Autobot requires a "schematic". Autobot ships with a few schematics
 in the `schematics` directory, but it's intended to be used with user-provided schematics.
@@ -79,12 +85,12 @@ A schematic is a directory containing two files:
 1. `before.py`: A code snippet demonstrating the "before" state of the refactor.
 2. `after.py`: A code snippet demonstrating the "after" state of the refactor.
 
-Each file is expected to consist of a brief top-level docstring describing the "before" and "after"
-states, followed by a single function or class.
+Each file is expected to consist of a brief top-level docstring describing the "before" or "after"
+state, followed by a single function or class.
 
 For example: in Python 3, `class Foo(object)` is equivalent to `class Foo`. To automatically remove
 those useless object inheritances from our codebase, we'd create a `useless_object_inheritance`
-directory, and add the above files.
+directory, and add the following two files:
 
 ```python
 # before.py
