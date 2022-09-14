@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "autobot-ml"
-version = "0.0.14"
+version = "0.0.15"
 description = "An automated code refactoring tool powered by GPT-3."
 authors = ["Charlie Marsh <charlie.r.marsh@gmail.com>"]
 license = "MIT"
