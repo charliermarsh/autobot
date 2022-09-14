@@ -13,11 +13,11 @@ class Snippet(NamedTuple):
     lineno: int
 
     @classmethod
-    def from_node(cls, source_code: str, node: ast.stmt) -> Snippet:
+    def from_node(cls, source_code: str, node: ast.AST) -> Snippet:
         return decontextualize(source_code, node)
 
 
-def decontextualize(source_code: str, node: ast.stmt) -> Snippet:
+def decontextualize(source_code: str, node: ast.AST) -> Snippet:
     """Decontextualize a snippet from its originating source code.
 
     Takes the originating source code as input, along with the node to decontextualize,
@@ -64,7 +64,7 @@ def recontextualize(snippet: Snippet, source_code: str) -> list[str]:
 
 def iter_snippets(
     source_code: str,
-    node_type: Type[ast.stmt],
+    node_type: Type[ast.AST] | tuple[Type[ast.AST], ...],
 ) -> Generator[Snippet, None, None]:
     """Generate all snippets from the provided source code.
 

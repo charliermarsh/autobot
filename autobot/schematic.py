@@ -17,22 +17,18 @@ class SchematicDefinitionException(Exception):
 
 def extract_transform_type(source_code: str) -> TransformType | None:
     for node in ast.walk(ast.parse(source_code)):
-        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
-            return TransformType.FUNCTION
-
-        if isinstance(node, ast.ClassDef):
-            return TransformType.CLASS
+        for transform_type in TransformType:
+            if isinstance(node, transform_type.ast_node_type()):
+                return transform_type
     else:
         return None
 
 
 def extract_source(source_code: str) -> str | None:
     for node in ast.walk(ast.parse(source_code)):
-        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
-            return ast.get_source_segment(source_code, node)
-
-        if isinstance(node, ast.ClassDef):
-            return ast.get_source_segment(source_code, node)
+        for transform_type in TransformType:
+            if isinstance(node, transform_type.ast_node_type()):
+                return ast.get_source_segment(source_code, node)
     else:
         return None
 

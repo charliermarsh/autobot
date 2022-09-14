@@ -16,9 +16,9 @@ class TransformType(enum.Enum):
             return "function"
         raise NotImplementedError(f"Unhandled transform type: {self}")
 
-    def ast_node_type(self) -> Type[ast.stmt]:
+    def ast_node_type(self) -> Type[ast.AST] | tuple[Type[ast.AST], ...]:
         if self == TransformType.CLASS:
             return ast.ClassDef
         if self == TransformType.FUNCTION:
-            return ast.FunctionDef
+            return ast.FunctionDef, ast.AsyncFunctionDef
         raise NotImplementedError(f"Unhandled transform type: {self}")
