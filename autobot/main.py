@@ -9,6 +9,8 @@ from dotenv import load_dotenv
 from rich.console import Console
 from rich.logging import RichHandler
 
+from autobot.version import __version__
+
 
 def run(options: Any) -> None:
     from autobot import api
@@ -61,6 +63,9 @@ def main() -> None:
 
     parser = argparse.ArgumentParser(
         prog="autobot", description="An automated code refactoring tool."
+    )
+    parser.add_argument(
+        "--version", action="version", version=f"%(prog)s {__version__}"
     )
     subparsers = parser.add_subparsers()
 
