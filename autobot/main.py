@@ -19,6 +19,7 @@ def run(options: Any) -> None:
 
     api.init()
 
+    model: str = options.model
     nthreads: int = options.nthreads
     verbose: bool = options.verbose
 
@@ -103,6 +104,7 @@ def run(options: Any) -> None:
         after_description=after_description,
         transform_type=transform_type,
         nthreads=nthreads,
+        model=model,
     )
 
 
@@ -131,6 +133,23 @@ def main() -> None:
     )
     parser_run.add_argument(
         "files", type=str, nargs="+", help="Path to the files to refactor."
+    )
+    parser_run.add_argument(
+        "--model",
+        type=str,
+        default="text-davinci-002",
+        choices=(
+            "text-davinci-002",
+            "text-curie-001",
+            "text-babbage-001",
+            "text-ada-001",
+            "code-davinci-002",
+            "code-cushman-001",
+        ),
+        help=(
+            "The OpenAI model to use when generating completions. "
+            "(Note: OpenAI's Codex models are currently in private beta.)"
+        ),
     )
     parser_run.add_argument(
         "--nthreads",

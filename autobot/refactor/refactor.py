@@ -23,6 +23,7 @@ def fix_text(
     after_text: str,
     before_description: str,
     after_description: str,
+    model: str,
 ) -> Tuple[str, str]:
     """Generate a fix for a snippet.
 
@@ -36,7 +37,8 @@ def fix_text(
             after_text=after_text,
             before_description=before_description,
             after_description=after_description,
-        )
+        ),
+        model=model,
     )
 
 
@@ -50,6 +52,7 @@ def run_refactor(
     after_description: str,
     transform_type: TransformType,
     nthreads: int,
+    model: str,
 ) -> None:
     with open(before_filename, "r") as fp:
         before_text = fp.read()
@@ -118,6 +121,7 @@ def run_refactor(
                     after_text=after_text,
                     before_description=before_description,
                     after_description=after_description,
+                    model=model,
                 ),
                 all_snippet_texts,
             ):

@@ -39,14 +39,14 @@ def make_prompt(
     )
 
 
-def resolve_prompt(prompt: Prompt) -> str:
+def resolve_prompt(prompt: Prompt, *, model: str = "text-davinci-002") -> str:
     """Generate a completion for a prompt."""
     response = api.create_completion(
         prompt=prompt.text,
         max_tokens=prompt.max_tokens,
         stop=prompt.stop,
+        model=model,
         temperature=0,
-        model="text-davinci-002",
     )
     for choice in response["choices"]:
         return cast(str, choice["text"])

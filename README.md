@@ -113,15 +113,18 @@ patches, followed by `autobot review` to apply or reject the suggested changes.
 ## Limitations
 
 1. Running Autobot consumes OpenAI credits and thus could cost you money. Be careful!
-2. To speed up execution, Autobot calls out to the OpenAI API in parallel. If you haven't upgraded
+2. By default, Autobot uses OpenAI's `text-davinci-002` model, though `autobot run` accepts a
+   `--model` parameter, allowing you to select an alternative OpenAI model. Note, though, that
+   OpenAI's Codex models are currently in a private beta.
+4. To speed up execution, Autobot calls out to the OpenAI API in parallel. If you haven't upgraded
    to a paid account, you may hit rate-limit errors. You can pass `--nthreads 1` to `autobot run`
    to disable multi-threading. Running Autobot over large codebases is not recommended (yet).
-3. Depending on the transform type, Autobot will attempt to generate a patch for every function or
+5. Depending on the transform type, Autobot will attempt to generate a patch for every function or
    every
    class. Any function or class that's "too long" for GPT-3's maximum prompt size will be skipped.
-4. Autobot isn't smart enough to handle nested functions (or nested classes), so nested functions
+6. Autobot isn't smart enough to handle nested functions (or nested classes), so nested functions
    will likely be processed and appear twice.
-5. Autobot only supports Python code for now. (Autobot relies on parsing the AST to extract relevant
+7. Autobot only supports Python code for now. (Autobot relies on parsing the AST to extract relevant
    code snippets, so additional languages require extending AST support.)
 
 ## License
