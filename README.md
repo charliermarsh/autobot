@@ -5,7 +5,9 @@
 An automated code refactoring tool powered by GPT-3. Like GitHub Copilot, for your existing
 codebase.
 
-![Sorting class attributes](https://user-images.githubusercontent.com/1309177/190035247-cc04bf49-3648-41de-acb1-9f3fbdac8bb0.gif)
+<p align="center">
+  <img alt="Sorting class attributes" src="https://user-images.githubusercontent.com/1309177/190035247-cc04bf49-3648-41de-acb1-9f3fbdac8bb0.gif">
+</p>
 
 Autobot takes an example change as input and generates patches for you to review by scanning your
 codebase for similar code blocks and "applying" that change to the existing source code.
