@@ -7,12 +7,12 @@ from typing import Dict, List, Set, Tuple
 
 from colorama import Fore
 from rich.console import Console
+from rich.progress import Progress
 
 from autobot import prompt
 from autobot.refactor import patches
 from autobot.snippet import Snippet, iter_snippets, recontextualize
 from autobot.transforms import TransformType
-from autobot.utils import filesystem
 
 
 def fix_text(
@@ -83,12 +83,9 @@ def run_refactor(
     console.print("-" * len(f"Running {title} based on user-provided example"))
     console.print()
 
-    console.print("[bold]1. Collecting Python files...")
-    targets = filesystem.collect_python_files(targets)
-
     # Deduplicate targets, such that if we need to apply the same fix to a bunch of
     # snippets, we only make a single API call.
-    console.print("[bold]2. Extracting AST nodes...")
+    console.print("[bold]1. Extracting AST nodes...")
     filename_to_snippets: Dict[str, List[Snippet]] = {}
     all_snippet_texts: Set[str] = set()
     for filename in targets:
@@ -97,34 +94,38 @@ def run_refactor(
 
         filename_to_snippets[filename] = []
         for snippet in iter_snippets(source_code, transform_type.ast_node_type()):
-            if len(snippet.text) > 1600:
+            max_snippet_len = 1600
+            if len(snippet.text) > max_snippet_len:
                 logging.warning(
                     f"Snippet at {filename}:{snippet.lineno} is too long "
-                    f"({len(snippet.text)} > 1600); skipping..."
+                    f"({len(snippet.text)} > {max_snippet_len}); skipping..."
                 )
                 continue
             filename_to_snippets[filename].append(snippet)
             all_snippet_texts.add(snippet.text)
 
     # Map from snippet text to suggested fix.
-    console.print("[bold]3. Generating LLM completions...")
+    console.print("[bold]2. Generating completions...")
     snippet_text_to_completion: Dict[str, str] = {}
-    with ThreadPool(processes=nthreads) as pool:
-        for text, completion in pool.map(
-            functools.partial(
-                fix_text,
-                transform_type=transform_type,
-                before_text=before_text,
-                after_text=after_text,
-                before_description=before_description,
-                after_description=after_description,
-            ),
-            all_snippet_texts,
-        ):
-            snippet_text_to_completion[text] = completion
+    with Progress(transient=True, console=console) as progress:
+        task = progress.add_task("", total=len(all_snippet_texts))
+        with ThreadPool(processes=nthreads) as pool:
+            for text, completion in pool.map(
+                functools.partial(
+                    fix_text,
+                    transform_type=transform_type,
+                    before_text=before_text,
+                    after_text=after_text,
+                    before_description=before_description,
+                    after_description=after_description,
+                ),
+                all_snippet_texts,
+            ):
+                progress.update(task, advance=1)
+                snippet_text_to_completion[text] = completion
 
     # Format each suggestion as a patch.
-    console.print("[bold]4. Constructing Git patches...")
+    console.print("[bold]3. Constructing patches...")
     count: int = 0
     for target in filename_to_snippets:
         with open(target, "r") as fp:

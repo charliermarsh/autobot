@@ -3,7 +3,7 @@ import argparse
 import json
 import logging
 import os
-from typing import Any, List
+from typing import Any
 
 from dotenv import load_dotenv
 from rich.console import Console
@@ -15,6 +15,7 @@ from autobot.transforms import TransformType
 def run(options: Any) -> None:
     from autobot import api
     from autobot.refactor import run_refactor
+    from autobot.utils import filesystem
 
     api.init()
 
@@ -24,7 +25,7 @@ def run(options: Any) -> None:
     logging.basicConfig(
         format="%(asctime)s %(levelname)-8s %(message)s",
         datefmt="%m-%d %H:%M:%S",
-        level=logging.DEBUG if verbose else logging.INFO,
+        level=logging.INFO if verbose else logging.WARNING,
         handlers=[RichHandler()],
     )
 
@@ -88,7 +89,10 @@ def run(options: Any) -> None:
             )
             exit(1)
 
-    targets: List[str] = options.target
+    targets = filesystem.collect_python_files(options.files)
+    if not targets:
+        console.print(f"[bold red]error[/]  No Python files found")
+        exit(1)
 
     run_refactor(
         title=os.path.basename(schematic),
@@ -111,16 +115,22 @@ def review(options: Any) -> None:
 def main() -> None:
     load_dotenv()
 
-    parser = argparse.ArgumentParser(prog="autobot")
+    parser = argparse.ArgumentParser(
+        prog="autobot", description="An automated code refactoring tool."
+    )
     subparsers = parser.add_subparsers()
 
     # autobot run
-    parser_run = subparsers.add_parser("run")
+    parser_run = subparsers.add_parser(
+        "run",
+        description="An automated code refactoring tool.",
+        usage="autobot run [schematic] [files [files ...]]",
+    )
     parser_run.add_argument(
         "schematic", type=str, help="Path to the autobot schematic."
     )
     parser_run.add_argument(
-        "target", type=str, nargs="+", help="Path to the files to refactor."
+        "files", type=str, nargs="+", help="Path to the files to refactor."
     )
     parser_run.add_argument(
         "--nthreads",
@@ -131,16 +141,25 @@ def main() -> None:
     parser_run.add_argument(
         "--verbose",
         action="store_true",
-        help="Whether to print our completions.",
+        help="Show verbose output.",
     )
     parser_run.set_defaults(func=run)
 
     # autobot review
-    parser_review = subparsers.add_parser("review")
+    parser_review = subparsers.add_parser(
+        "review",
+        description="An automated code refactoring tool.",
+        usage="autobot review",
+    )
     parser_review.set_defaults(func=review)
 
     args = parser.parse_args()
     if hasattr(args, "func"):
         args.func(args)
     else:
-        parser.print_usage()
+        console = Console()
+        console.print(
+            "[bold white]Usage: autobot run \[schematic] \[files \[files ...]]"
+        )
+        console.print()
+        console.print("[bold white]An automated code refactoring tool.")

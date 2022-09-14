@@ -35,7 +35,7 @@ def create_completion(
     ).hexdigest()
 
     if response := cache.get_from_cache(request_hash):
-        logging.debug("Reading response from cache...")
+        logging.info("Reading response from cache...")
         return response
 
     response = openai.Completion.create(
