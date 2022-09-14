@@ -1,7 +1,7 @@
+import ast
 import difflib
-import json
 import os
-from typing import NamedTuple
+from typing import NamedTuple, Optional
 
 from colorama import Fore
 
@@ -15,6 +15,36 @@ class SchematicDefinitionException(Exception):
     pass
 
 
+def extract_transform_type(source_code: str) -> Optional[TransformType]:
+    for node in ast.walk(ast.parse(source_code)):
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            return TransformType.FUNCTION
+
+        if isinstance(node, ast.ClassDef):
+            return TransformType.CLASS
+    else:
+        return None
+
+
+def extract_source(source_code: str) -> Optional[str]:
+    for node in ast.walk(ast.parse(source_code)):
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            return ast.get_source_segment(source_code, node)
+
+        if isinstance(node, ast.ClassDef):
+            return ast.get_source_segment(source_code, node)
+    else:
+        return None
+
+
+def extract_description(source_code: str) -> Optional[str]:
+    for node in ast.walk(ast.parse(source_code)):
+        if isinstance(node, ast.Module):
+            return ast.get_docstring(node)
+    else:
+        return None
+
+
 class Schematic(NamedTuple):
     title: str
     before_text: str
@@ -26,9 +56,7 @@ class Schematic(NamedTuple):
     @classmethod
     def from_directory(cls, dirname: str) -> "Schematic":
         """Load a Schematic from a directory."""
-        # Attempt to load the schematic.
         dirname = dirname.rstrip("/")
-
         title = os.path.basename(dirname)
 
         if not os.path.isdir(dirname):
@@ -43,48 +71,43 @@ class Schematic(NamedTuple):
 
             dirname = bundled_dirname
 
-        before_filename: str = os.path.join(dirname, BEFORE_FILENAME)
+        before_filename = os.path.join(dirname, BEFORE_FILENAME)
         if not os.path.isfile(before_filename):
             raise SchematicDefinitionException(
                 f"Unable to find file: {before_filename}"
             )
 
         with open(before_filename, "r") as fp:
-            before_text: str = fp.read()
+            source_code = fp.read()
+            if not (transform_type := extract_transform_type(source_code)):
+                raise SchematicDefinitionException(
+                    f"Invalid transform type found in: {before_filename}"
+                )
+            if not (before_text := extract_source(source_code)):
+                raise SchematicDefinitionException(
+                    f"No source node found in: {before_filename}"
+                )
+            if not (before_description := extract_description(source_code)):
+                raise SchematicDefinitionException(
+                    f"No description found in: {before_filename}"
+                )
+            before_description = before_description.lstrip(".").rstrip(".")
 
-        after_filename: str = os.path.join(dirname, AFTER_FILENAME)
+        after_filename = os.path.join(dirname, AFTER_FILENAME)
         if not os.path.isfile(after_filename):
             raise SchematicDefinitionException(f"Unable to find file: {after_filename}")
 
         with open(after_filename, "r") as fp:
-            after_text = fp.read()
-
-        autobot: str = os.path.join(dirname, "autobot.json")
-        if not os.path.isfile(autobot):
-            raise SchematicDefinitionException(f"Unable to find file: {autobot}")
-
-        with open(autobot, "r") as fp:
-            metadata = json.load(fp)
-            if not (before_description := metadata.get("before_description")):
+            source_code = fp.read()
+            if not (after_text := extract_source(source_code)):
                 raise SchematicDefinitionException(
-                    f"autobot.json is missing `before_description`"
+                    f"No source node found in: {after_filename}"
                 )
-            if not (after_description := metadata.get("after_description")):
+            if not (after_description := extract_description(source_code)):
                 raise SchematicDefinitionException(
-                    f"autobot.json is missing `after_description`"
+                    f"No description found in: {after_filename}"
                 )
-            if not (transform_type_raw := metadata.get("transform_type")):
-                raise SchematicDefinitionException(
-                    f"autobot.json is missing `transform_type`"
-                )
-
-            try:
-                transform_type: TransformType = TransformType(transform_type_raw)
-            except ValueError:
-                raise SchematicDefinitionException(
-                    f"Invalid `transform_type`: '{transform_type_raw}'. Choose one of: "
-                    f"{[member.value for member in TransformType]}."
-                )
+            after_description = after_description.lstrip(".").rstrip(".")
 
         return cls(
             title=title,

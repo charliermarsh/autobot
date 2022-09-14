@@ -1,3 +1,6 @@
+"""...as a standard class."""
+
+
 class MyClass:
     def __init__(self, x: int, y: int, z: int):
         self.x = x

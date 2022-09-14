@@ -1,5 +1,0 @@
-{
-    "before_description": "as a standard class",
-    "after_description": "as a @dataclass",
-    "transform_type": "Class"
-}

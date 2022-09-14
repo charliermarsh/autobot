@@ -1,5 +1,0 @@
-{
-    "before_description": "with NumPy's builtin aliases (like np.int)",
-    "after_description": "without NumPy's deprecated aliases (so int instead of np.int)",
-    "transform_type": "Function"
-}

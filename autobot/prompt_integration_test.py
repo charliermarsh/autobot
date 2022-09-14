@@ -247,3 +247,7 @@ def run(self, parameter_name: str, value: pd.DataFrame) -> Generator[SpecViolati
         )
 
         self.assertEqual(expected.strip(), actual.strip())
+
+
+if __name__ == "__main__":
+    unittest.main()

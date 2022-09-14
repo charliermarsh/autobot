@@ -1,3 +1,6 @@
+"""...with alphabetically sorted class attributes."""
+
+
 class MyUnsortedConstants:
     A = "zzz123"
     B = "aaa234"

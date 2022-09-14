@@ -1,5 +1,0 @@
-{
-    "before_description": "with typing module generics",
-    "after_description": "with standard library generics",
-    "transform_type": "Function"
-}

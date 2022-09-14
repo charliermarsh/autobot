@@ -1,3 +1,6 @@
+"""...with self.assertEquals."""
+
+
 class MemoryCacheTest(unittest.TestCase):
     def test_roundtrip(self) -> None:
         cache = MemoryCache(scope="test_roundtrip")

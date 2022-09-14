@@ -1,3 +1,6 @@
+"""...as a @dataclass."""
+
+
 @dataclass
 class MyClass:
     x: int

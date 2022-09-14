@@ -1,3 +1,6 @@
+"""...with standard library generics."""
+
+
 def func(
     x: list[int] | None,
     y: int | None,

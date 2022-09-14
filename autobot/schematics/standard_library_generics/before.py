@@ -1,3 +1,6 @@
+"""...with typing module generics."""
+
+
 def func(
     x: Optional[List[int]],
     y: Optional[int],

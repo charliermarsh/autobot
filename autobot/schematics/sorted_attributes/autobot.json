@@ -1,5 +1,0 @@
-{
-    "before_description": "with unsorted class attributes",
-    "after_description": "with alphabetically sorted class attributes",
-    "transform_type": "Class"
-}

@@ -1,5 +1,0 @@
-{
-    "before_description": "with self.assertEquals",
-    "after_description": "without self.assertEquals",
-    "transform_type": "Function"
-}

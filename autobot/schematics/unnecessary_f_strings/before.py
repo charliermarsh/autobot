@@ -1,3 +1,6 @@
+"""...with useless f-string prefixes."""
+
+
 def func() -> None:
     a = f"world"
     b = f"Hello, {a}!"
