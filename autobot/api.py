@@ -19,6 +19,7 @@ def init() -> None:
 def create_completion(
     prompt: str,
     max_tokens: int,
+    *,
     temperature: int = 0,
     model: str = "text-davinci-002",
     stop: str | list[str] | None = None,

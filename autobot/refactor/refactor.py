@@ -89,7 +89,7 @@ def run_refactor(
     with Progress(transient=True, console=console) as progress:
         task = progress.add_task("", total=len(all_snippet_texts))
         with ThreadPool(processes=nthreads) as pool:
-            for text, completion in pool.map(
+            for text, completion in pool.imap_unordered(
                 functools.partial(
                     _fix_text,
                     schematic=schematic,
