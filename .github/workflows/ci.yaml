@@ -36,3 +36,5 @@ jobs:
         run: poetry run isort --check --diff autobot tests
       - name: unittest
         run: poetry run python -m unittest discover -s tests/unit
+      - name: ruff
+        run: poetry run ruff autobot tests

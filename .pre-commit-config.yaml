@@ -10,3 +10,7 @@ repos:
       - id: black
         name: black (python)
         language_version: python3.10
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: v0.0.40
+    hooks:
+      - id: lint
