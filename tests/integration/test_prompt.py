@@ -235,7 +235,7 @@ def run(self, parameter_name: str, value: pd.DataFrame) -> Generator[SpecViolati
                 pd.DataFrame,
                 value,
             )
-            """
+            """  # noqa: E501
 
         actual = prompt.resolve_prompt(
             prompt.make_prompt(

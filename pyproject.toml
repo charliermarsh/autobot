@@ -33,7 +33,8 @@ rich = "^12.5.1"
 black = "^22.8.0"
 isort = "^5.10.1"
 twine = "^4.0.1"
-mypy = "^0.971"
+mypy = "^0.981"
+ruff = "^0.0.48"
 
 [tool.poetry.scripts]
 autobot = "autobot.main:main"
@@ -51,3 +52,6 @@ preview = true
 [tool.isort]
 profile = "black"
 extend_skip = "autobot/schematics"
+
+[tool.ruff]
+extend-exclude = ["autobot/schematics"]
