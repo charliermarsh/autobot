@@ -41,7 +41,7 @@ def run(options: Any) -> None:
 
     targets = filesystem.collect_python_files(options.files)
     if not targets:
-        console.print(f"[bold red]error[/]  No Python files found")
+        console.print("[bold red]error[/]  No Python files found")
         exit(1)
 
     run_refactor(

@@ -134,7 +134,7 @@ def run_refactor(
 
     console.print()
     if count == 0:
-        console.print(f"[bold white]✨ Done! No suggestions found.")
+        console.print("[bold white]✨ Done! No suggestions found.")
     elif count == 1:
         console.print(f"[bold white]✨ Done! Generated {count} patch.")
     else:
