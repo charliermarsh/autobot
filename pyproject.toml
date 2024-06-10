@@ -34,7 +34,7 @@ black = "^22.8.0"
 isort = "^5.10.1"
 twine = "^4.0.1"
 mypy = "^0.981"
-ruff = "^0.0.48"
+ruff = "^0.4.0"
 
 [tool.poetry.scripts]
 autobot = "autobot.main:main"
@@ -43,15 +43,9 @@ autobot = "autobot.main:main"
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
-[tool.black]
-line-length = 88
-target-version = ["py310"]
-extend-exclude = "autobot/schematics"
-preview = true
-
-[tool.isort]
-profile = "black"
-extend_skip = "autobot/schematics"
-
 [tool.ruff]
+preview = true
 extend-exclude = ["autobot/schematics"]
+
+[tool.ruff.lint]
+extend-select = ["I"]

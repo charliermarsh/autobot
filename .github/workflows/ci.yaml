@@ -28,13 +28,11 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install --upgrade poetry
           poetry install
-      - name: Black
-        run: poetry run black --target-version py310 --check autobot tests
       - name: Mypy
         run: poetry run mypy autobot tests
-      - name: isort
-        run: poetry run isort --check --diff autobot tests
       - name: unittest
         run: poetry run python -m unittest discover -s tests/unit
-      - name: ruff
-        run: poetry run ruff autobot tests
+      - name: lint
+        run: poetry run ruff check autobot tests
+      - name: format
+        run: poetry run ruff format --check autobot tests

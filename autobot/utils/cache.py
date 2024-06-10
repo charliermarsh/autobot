@@ -1,4 +1,5 @@
 """Filesystem-based cache for storing JSON objects."""
+
 from __future__ import annotations
 
 import json

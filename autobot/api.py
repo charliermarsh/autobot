@@ -1,4 +1,5 @@
 """Interface to the OpenAI API."""
+
 from __future__ import annotations
 
 import hashlib
@@ -25,15 +26,13 @@ def create_completion(
     stop: str | list[str] | None = None,
 ) -> openai.Completion:
     request_hash = hashlib.md5(
-        json.dumps(
-            {
-                "prompt": prompt,
-                "max_tokens": max_tokens,
-                "temperature": temperature,
-                "model": model,
-                "stop": stop,
-            }
-        ).encode("utf-8")
+        json.dumps({
+            "prompt": prompt,
+            "max_tokens": max_tokens,
+            "temperature": temperature,
+            "model": model,
+            "stop": stop,
+        }).encode("utf-8")
     ).hexdigest()
 
     if response := cache.get_from_cache(request_hash):
