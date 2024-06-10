@@ -5,14 +5,17 @@ import functools
 import logging
 import os.path
 from multiprocessing.pool import ThreadPool
+from typing import TYPE_CHECKING
 
 from rich.console import Console
 from rich.progress import Progress
 
 from autobot import prompt
 from autobot.refactor import patches
-from autobot.schematic import Schematic
 from autobot.snippet import Snippet, iter_snippets, recontextualize
+
+if TYPE_CHECKING:
+    from autobot.schematic import Schematic
 
 
 def _fix_text(
