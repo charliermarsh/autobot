@@ -1,9 +1,11 @@
 from __future__ import annotations
 
-from typing import NamedTuple, cast
+from typing import TYPE_CHECKING, NamedTuple, cast
 
 from autobot import api
-from autobot.transforms import TransformType
+
+if TYPE_CHECKING:
+    from autobot.transforms import TransformType
 
 
 class Prompt(NamedTuple):
