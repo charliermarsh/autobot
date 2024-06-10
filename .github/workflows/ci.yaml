@@ -11,28 +11,19 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: pip cache
-        uses: actions/cache@v2
+      - uses: actions/checkout@v3
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v4
         with:
-          path: ~/.cache/pip
-          key: lint-pip-${{ hashFiles('**/pyproject.toml') }}
-          restore-keys: |
-            lint-pip-
-      - name: Set up Python 3.10
-        uses: actions/setup-python@v2
-        with:
-          python-version: "3.10"
+          python-version: "3.12"
+      - uses: hynek/setup-cached-uv@v1
       - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install --upgrade poetry
-          poetry install
+        run: uv sync -p 3.12
       - name: Mypy
-        run: poetry run mypy autobot tests
+        run: uv run mypy autobot tests
       - name: unittest
-        run: poetry run python -m unittest discover -s tests/unit
+        run: uv run python -m unittest discover -s tests/unit
       - name: lint
-        run: poetry run ruff check autobot tests
+        run: uv run ruff check autobot tests
       - name: format
-        run: poetry run ruff format --check autobot tests
+        run: uv run ruff format --check autobot tests
