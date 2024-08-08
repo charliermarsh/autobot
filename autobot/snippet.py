@@ -37,7 +37,9 @@ def decontextualize(source_code: str, node: ast.AST) -> Snippet:
     else:
         padding = ""
 
-    return Snippet(source_segment, padding, node.lineno)
+    lineno: int = node.lineno  # type: ignore[attr-defined]
+
+    return Snippet(source_segment, padding, lineno)
 
 
 def recontextualize(snippet: Snippet, source_code: str) -> list[str]:
